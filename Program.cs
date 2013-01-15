@@ -32,10 +32,14 @@ namespace nfkdedic
                 Environment.Exit(0);
             }
 
+            // set directory where the program placed
+            Directory.SetCurrentDirectory(AppDomain.CurrentDomain.BaseDirectory);
 
             if (!File.Exists(Config.ServerExeFile))
             {
-                Console.WriteLine("'{0}' doesn't exists!", Config.ServerExeFile);
+                var msg = string.Format("'{0}' doesn't exists!", Config.ServerExeFile);
+                Console.WriteLine(msg);
+                Log.Error(msg);
                 Environment.Exit(0);
             }
 

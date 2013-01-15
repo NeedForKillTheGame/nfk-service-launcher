@@ -68,6 +68,8 @@ namespace nfkdedic
             if (isDestroy)
                 return;
 
+            process.ProcessorAffinity = (IntPtr)Config.ProcessorAffinity;
+
             // get control handles
             mainHandle = process.MainWindowHandle;
 

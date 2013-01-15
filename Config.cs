@@ -9,7 +9,7 @@ namespace nfkdedic
     {
 
 
-        private static string _serverExeFile = "Server.dat";
+        private static string _serverExeFile = "server.dat";
         public static string ServerExeFile
         {
             get
@@ -35,7 +35,7 @@ namespace nfkdedic
             }
         }
 
-        private static string _logFile = @"basenfk\REALTIMELOG.txt";
+        private static string _logFile = @"basenfk\realtimelog.txt";
         public static string LogFile
         {
             get
@@ -45,6 +45,20 @@ namespace nfkdedic
                     _logFile = value;
 
                 return _logFile; 
+            }
+        }
+
+        private static int _processorAffinity = 0xFF;
+        public static int ProcessorAffinity
+        {
+            get
+            {
+                int value = 0;
+                int.TryParse(GetConfigurationValue("ProcessorAffinity"), System.Globalization.NumberStyles.HexNumber, null, out value);
+                if (value != 0)
+                    _processorAffinity = value;
+
+                return _processorAffinity;
             }
         }
 
