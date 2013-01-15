@@ -9,71 +9,82 @@ namespace nfkservice
     {
 
 
-        private static string _serverExeFile = "server.dat";
+        private static string _serverExeFile;
         public static string ServerExeFile
         {
             get
             {
+                if (_serverExeFile != null)
+                    return _serverExeFile;
+
                 var value = GetConfigurationValue("ServerExeFile");
-                if (value != null)
-                    _serverExeFile = value;
+                _serverExeFile = value ?? "server.dat";
 
                 return _serverExeFile;
             }
         }
 
-        private static string _exeParameters = "+gowindow +nosound +nfkplanet +game server +exec server +dontsavecfg software";
+        private static string _exeParameters;
         public static string ExeParameters
         {
             get
             {
+                if (_exeParameters != null)
+                    return _exeParameters;
+
                 var value = GetConfigurationValue("ExeParameters");
-                if (value != null)
-                    _exeParameters = value;
+                _exeParameters = value ?? "+gowindow +nosound +nfkplanet +game server +exec server +dontsavecfg software";
 
                 return _exeParameters;
             }
         }
 
-        private static string _logFile = @"basenfk\realtimelog.txt";
+        private static string _logFile;
         public static string LogFile
         {
             get
             {
+                if (_logFile != null)
+                    return _logFile;
+
                 var value = GetConfigurationValue("LogFile");
-                if (value != null)
-                    _logFile = value;
+                _logFile = value ?? @"basenfk\realtimelog.txt";
 
                 return _logFile; 
             }
         }
 
-        private static int _processorAffinity = 0xFF;
+        private static string _serviceName;
+        public static string ServiceName
+        {
+            get
+            {
+                if (_serviceName != null)
+                    return _serviceName;
+
+                var value = GetConfigurationValue("ServiceName");
+                _serviceName = value ?? "NFK";
+
+                return _serviceName;
+            }
+        }
+
+        private static int _processorAffinity;
         public static int ProcessorAffinity
         {
             get
             {
-                int value = 0;
+                if (_processorAffinity > 0)
+                    return _processorAffinity;
+
+                int value;
                 int.TryParse(GetConfigurationValue("ProcessorAffinity"), System.Globalization.NumberStyles.HexNumber, null, out value);
-                if (value != 0)
-                    _processorAffinity = value;
+                _processorAffinity = (value > 0) ? value : 0xFF;
 
                 return _processorAffinity;
             }
         }
 
-        private static string _serviceName = "NFK";
-        public static string ServiceName
-        {
-            get
-            {
-                var value = GetConfigurationValue("ServiceName");
-                if (value != null)
-                    _serviceName = value;
-
-                return _serviceName;
-            }
-        }
 
 
         private static string GetConfigurationValue(string key)
