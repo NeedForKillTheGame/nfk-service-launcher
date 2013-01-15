@@ -9,9 +9,6 @@ namespace nfkdedic
 {
     class Program
     {
-
-
-
         static void Main(string[] args)
         {
             if (args.Length != 1)
@@ -28,13 +25,15 @@ namespace nfkdedic
             Config.ServerExeFile = args[0];
 
 
-            // TODO: register console close event
-            AppDomain.CurrentDomain.ProcessExit += new EventHandler(CurrentDomain_ProcessExit);
+            // register console close event
+            _consoleHandler = new ConsoleCtrlHandlerDelegate(ConsoleEventHandler);
+            SetConsoleCtrlHandler(_consoleHandler, true);
 
 
-
+            // run process in new thread
             Server.Start();
 
+            // handle for console input command
             while (true)
             {
                 Server.SendCommand(Console.ReadLine());
@@ -42,14 +41,44 @@ namespace nfkdedic
         }
 
 
-        
 
-        static void CurrentDomain_ProcessExit(object sender, EventArgs e)
+
+        #region Page Event Setup
+        enum ConsoleCtrlHandlerCode : uint
         {
-
-
-            Environment.Exit(0);
+            CTRL_C_EVENT = 0,
+            CTRL_BREAK_EVENT = 1,
+            CTRL_CLOSE_EVENT = 2,
+            CTRL_LOGOFF_EVENT = 5,
+            CTRL_SHUTDOWN_EVENT = 6
         }
+        delegate bool ConsoleCtrlHandlerDelegate(ConsoleCtrlHandlerCode eventCode);
+        [DllImport("kernel32.dll")]
+        static extern bool SetConsoleCtrlHandler(ConsoleCtrlHandlerDelegate handlerProc, bool add);
+        static ConsoleCtrlHandlerDelegate _consoleHandler;
+        #endregion
+
+        #region Page Events
+        static bool ConsoleEventHandler(ConsoleCtrlHandlerCode eventCode)
+        {
+            // Handle close event here...
+            switch (eventCode)
+            {
+                case ConsoleCtrlHandlerCode.CTRL_C_EVENT:
+                case ConsoleCtrlHandlerCode.CTRL_CLOSE_EVENT:
+                case ConsoleCtrlHandlerCode.CTRL_BREAK_EVENT:
+                case ConsoleCtrlHandlerCode.CTRL_LOGOFF_EVENT:
+                case ConsoleCtrlHandlerCode.CTRL_SHUTDOWN_EVENT:
+
+                    Server.Destroy();
+
+                    Environment.Exit(0);
+                    break;
+            }
+
+            return (false);
+        }
+        #endregion
 
 
     }

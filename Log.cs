@@ -50,6 +50,10 @@ namespace nfkdedic
             Write( String.Format("\n[{0}] [ERROR] {1}\n\n", DateTime.Now, text) );
         }
 
+        public static void Info(string text)
+        {
+            Write(String.Format("\n[{0}] [INFO] {1}\n\n", DateTime.Now, text));
+        }
 
         static void Write(string text)
         {

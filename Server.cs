@@ -86,11 +86,14 @@ namespace nfkdedic
                 Thread.Sleep(1000);
             }
 
-
-            Log.Error("Server crashed! Restarting...");
-            Thread.Sleep(3000);
-            Log.ClearOldText();
-            Start();
+            // if server was not destroyed
+            if (!isDestroy)
+            {
+                Log.Error("Server crashed! Restarting...");
+                Thread.Sleep(3000);
+                Log.ClearOldText();
+                Start();
+            }
         }
 
         /// <summary>
@@ -120,11 +123,22 @@ namespace nfkdedic
             return text.ToString();
         }
 
-        ~Server()
+
+        private static bool isDestroy = false;
+        public static void Destroy()
         {
+            isDestroy = true;
+
+            Log.Info("Shutdown from console");
+
             // kill nfk on program exit
             if (!process.HasExited)
                 process.Kill();
+        }
+
+        ~Server()
+        {
+            Destroy();
         }
     }
 }
