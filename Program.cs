@@ -41,9 +41,7 @@ namespace nfkdedic
             // TODO: register console close event
             AppDomain.CurrentDomain.ProcessExit += new EventHandler(CurrentDomain_ProcessExit);
 
-            // start nfk dedicated in new thread
-            var t = new Thread(StartNFK);
-            t.Start();
+            Start();
 
 
 
@@ -51,6 +49,14 @@ namespace nfkdedic
             {
                 SendCommand(Console.ReadLine());
             }
+        }
+
+
+        // start nfk dedicated in new thread
+        private static void Start()
+        {
+            var t = new Thread(StartNFK);
+            t.Start();
         }
 
         [STAThread]
@@ -94,6 +100,11 @@ namespace nfkdedic
                 Thread.Sleep(1000);
             }
 
+
+            Log.Error("Server crashed! Restarting...");
+            Thread.Sleep(3000);
+            Log.ClearOldText();
+            Start();
         }
 
         /// <summary>

@@ -8,6 +8,12 @@ namespace nfkdedic
     {
         private static StringBuilder oldtext = new StringBuilder();
 
+
+        public static void ClearOldText()
+        {
+            oldtext = new StringBuilder();
+        }
+
         /// <summary>
         /// Push only modified lines to log
         /// </summary>
@@ -16,7 +22,7 @@ namespace nfkdedic
         {
             var oldtextlength = oldtext.Length;
 
-            if (text.Length == oldtextlength)
+            if (text.Length == 0 || text.Length == oldtextlength)
                 return;
 
             // iterate text starting from the end
@@ -39,9 +45,9 @@ namespace nfkdedic
         }
 
 
-        public static void Append(string text)
+        public static void Error(string text)
         {
-            Write(text);
+            Write( String.Format("\n[{0}] [ERROR] {1}\n\n", DateTime.Now, text) );
         }
 
 
