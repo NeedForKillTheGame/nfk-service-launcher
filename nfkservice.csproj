@@ -7,8 +7,8 @@
     <ProjectGuid>{75E2B054-63B6-4794-A077-ECE92948901B}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>nfkdedic</RootNamespace>
-    <AssemblyName>nfkdedic</AssemblyName>
+    <RootNamespace>nfkservice</RootNamespace>
+    <AssemblyName>nfkservice</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />

@@ -3,7 +3,7 @@ using System.IO;
 using System.Runtime.InteropServices;
 using System.ServiceProcess;
 
-namespace nfkdedic
+namespace nfkservice
 {
     class Program
     {

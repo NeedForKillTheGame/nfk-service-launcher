@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("nfkdedic")]
-[assembly: AssemblyDescription("NFK Dedicated Server Launcher")]
+[assembly: AssemblyTitle("nfkservice")]
+[assembly: AssemblyDescription("Service Utility for NFK (Need For Kill)")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("harpywar.com")]
-[assembly: AssemblyProduct("nfkdedic")]
+[assembly: AssemblyProduct("nfkservice")]
 [assembly: AssemblyCopyright("Copyright © 2013, HarpyWar")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

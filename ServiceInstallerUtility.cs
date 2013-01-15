@@ -1,7 +1,7 @@
 ﻿using System.Configuration.Install;
 using System.Reflection;
 
-namespace nfkdedic
+namespace nfkservice
 {
     class ServiceInstallerUtility
     {

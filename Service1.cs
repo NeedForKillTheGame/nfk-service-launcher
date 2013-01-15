@@ -6,7 +6,7 @@ using System.Diagnostics;
 using System.ServiceProcess;
 using System.Text;
 
-namespace nfkdedic
+namespace nfkservice
 {
     partial class Service1 : ServiceBase
     {

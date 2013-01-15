@@ -1,4 +1,4 @@
-﻿namespace nfkdedic
+﻿namespace nfkservice
 {
     partial class ProjectInstaller
     {

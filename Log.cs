@@ -2,7 +2,7 @@
 using System.IO;
 using System.Text;
 
-namespace nfkdedic
+namespace nfkservice
 {
     static class Log
     {

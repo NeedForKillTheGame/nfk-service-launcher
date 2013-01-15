@@ -3,7 +3,7 @@ using System.Configuration;
 using System.IO;
 using System.Reflection;
 
-namespace nfkdedic
+namespace nfkservice
 {
     class Config
     {
