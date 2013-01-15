@@ -57,10 +57,17 @@ namespace nfkdedic
 
         static void Write(string text)
         {
-            using (StreamWriter w = File.AppendText(Config.LogFile))
+            try
             {
-                w.Write(text);
-                Console.Write(text);
+                using (StreamWriter w = File.AppendText(Config.LogFile))
+                {
+                    w.Write(text);
+                    Console.Write(text);
+                }
+            }
+            catch (Exception)
+            {
+                Console.WriteLine("Can't write to log " + Config.LogFile);
             }
         }
     }

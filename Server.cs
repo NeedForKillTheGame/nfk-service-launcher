@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
@@ -55,10 +53,10 @@ namespace nfkdedic
                 {
                     FileName = Config.ServerExeFile,
                     WorkingDirectory = Path.GetDirectoryName(Config.ServerExeFile),
-                    Arguments = "+gowindow +nosound +nfkplanet +game server +exec server +dontsavecfg software",
+                    Arguments = Config.ExeParameters,
                     RedirectStandardOutput = false,
                     UseShellExecute = false,
-                    WindowStyle = ProcessWindowStyle.Minimized
+                    WindowStyle = ProcessWindowStyle.Hidden
                 }
             };
 
@@ -67,6 +65,8 @@ namespace nfkdedic
             // wait a second
             Thread.Sleep(1000);
 
+            if (isDestroy)
+                return;
 
             // get control handles
             mainHandle = process.MainWindowHandle;
@@ -86,14 +86,13 @@ namespace nfkdedic
                 Thread.Sleep(1000);
             }
 
-            // if server was not destroyed
-            if (!isDestroy)
-            {
-                Log.Error("Server crashed! Restarting...");
-                Thread.Sleep(3000);
-                Log.ClearOldText();
-                Start();
-            }
+            if (isDestroy)
+                return;
+
+            Log.Error("Server crashed! Restarting...");
+            Thread.Sleep(3000);
+            Log.ClearOldText();
+            Start();
         }
 
         /// <summary>
@@ -106,6 +105,12 @@ namespace nfkdedic
             SendMessage(inputHandle, WM_SETTEXT, 0, new StringBuilder(text));
             // click send
             SendMessage(sendHandle, WM_COMMAND, 0, null);
+
+            if (text == "quit")
+            {
+                Destroy();
+                Environment.Exit(0);                
+            }
         }
 
         /// <summary>
@@ -134,11 +139,6 @@ namespace nfkdedic
             // kill nfk on program exit
             if (!process.HasExited)
                 process.Kill();
-        }
-
-        ~Server()
-        {
-            Destroy();
         }
     }
 }

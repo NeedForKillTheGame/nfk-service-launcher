@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Runtime.InteropServices;
-using System.Text;
+using System.ServiceProcess;
 
 namespace nfkdedic
 {
@@ -11,32 +9,58 @@ namespace nfkdedic
     {
         static void Main(string[] args)
         {
-            if (args.Length != 1)
+            // self service installer/uninstaller
+            if (args != null && args.Length == 1
+                && (args[0][0] == '-' || args[0][0] == '/'))
             {
-                Console.WriteLine("usage: nfkdedic.exe [server.dat]");
+                switch (args[0].Substring(1).ToLower())
+                {
+                    case "install":
+                    case "i":
+                        if (!ServiceInstallerUtility.InstallMe())
+                            Console.WriteLine("Failed to install service");
+                        break;
+                    case "uninstall":
+                    case "u":
+                        if (!ServiceInstallerUtility.UninstallMe())
+                            Console.WriteLine("Failed to uninstall service");
+                        break;
+                    default:
+                        Console.WriteLine("Unrecognized parameters.");
+                        break;
+                }
+                Environment.Exit(0);
             }
 
-            if (!File.Exists(args[0]))
+
+            if (!File.Exists(Config.ServerExeFile))
             {
-                Console.WriteLine("'{0}' doesn't exists!", args[0]);
-                return;
+                Console.WriteLine("'{0}' doesn't exists!", Config.ServerExeFile);
+                Environment.Exit(0);
             }
 
-            Config.ServerExeFile = args[0];
 
-
-            // register console close event
-            _consoleHandler = new ConsoleCtrlHandlerDelegate(ConsoleEventHandler);
-            SetConsoleCtrlHandler(_consoleHandler, true);
-
-
-            // run process in new thread
-            Server.Start();
-
-            // handle for console input command
-            while (true)
+            // console mode
+            if (Environment.UserInteractive)
             {
-                Server.SendCommand(Console.ReadLine());
+                // register console close event
+                _consoleHandler = new ConsoleCtrlHandlerDelegate(ConsoleEventHandler);
+                SetConsoleCtrlHandler(_consoleHandler, true);
+
+                Server.Start();
+                // handle for console input command
+                while (true)
+                {
+                    Server.SendCommand(Console.ReadLine());
+                }
+            }
+            // service mode
+            else
+            {
+                var service = new Service1();
+                var servicesToRun = new ServiceBase[] { service };
+
+                ServiceBase.Run(servicesToRun);
             }
         }
 

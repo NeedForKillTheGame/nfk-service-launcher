@@ -6,11 +6,11 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("nfkdedic")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("NFK Dedicated Server Launcher")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("harpywar.com")]
 [assembly: AssemblyProduct("nfkdedic")]
-[assembly: AssemblyCopyright("Copyright ©  2013")]
+[assembly: AssemblyCopyright("Copyright © 2013, HarpyWar")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
