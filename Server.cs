@@ -54,21 +54,22 @@ namespace nfkservice
                     FileName = Config.ServerExeFile,
                     WorkingDirectory = Path.GetDirectoryName(Config.ServerExeFile),
                     Arguments = Config.ExeParameters,
-                    RedirectStandardOutput = false,
                     UseShellExecute = false,
-                    WindowStyle = ProcessWindowStyle.Hidden
+                    WindowStyle = ProcessWindowStyle.Hidden,
+                    CreateNoWindow = true
                 }
             };
 
             process.Start();
 
-            // wait a second
-            Thread.Sleep(1000);
+           // wait a second (if no wait then window handle will be 0)
+            Thread.Sleep(500);
 
             if (isDestroy)
                 return;
 
             process.ProcessorAffinity = (IntPtr)Config.ProcessorAffinity;
+            process.PriorityClass = Config.ProcessorPriority;
 
             // get control handles
             mainHandle = process.MainWindowHandle;

@@ -8,13 +8,13 @@ Console Launcher for NFK dedicated server ([Need For Kill](http://needforkill.ru
 
 ## Features
 * Console interface (native for dedicated)
-* Realtime NFK server logging 
+* Realtime NFK server logging with timestamp
 * Autorestart NFK server when it crash
-* Set processor affinity to NFK server process
+* Set processor affinity and priority to NFK server process
 * It can be installed as a windows service
 
 
-## Requirements
+### Requirements
 * [.NET Framework 3.5](http://www.microsoft.com/en-us/download/details.aspx?id=21) (but it can be compiled with >=2.0)
 
 
@@ -25,10 +25,11 @@ You can define custom variables in `nfkservice.exe.config`:
 * `ServerExeFile` - path to server.dat (nfk dedicated server executable)
 * `ExeParameters` - parameters to start nfk
 * `LogFile` - realtime log from nfk
-* `ProcessorAffinity` - set processor affinity mask to the server process ([hex value]( http://msdn.microsoft.com/en-us/library/ms187104.aspx))
+* `ProcessorAffinity` - set processor [affinity]( http://msdn.microsoft.com/en-us/library/vstudio/system.diagnostics.process.processoraffinity(v=vs.90).aspx) mask to the server process (hex value)
+* `ProcessorPriority` - set processor [priority](http://msdn.microsoft.com/en-us/library/vstudio/system.diagnostics.processpriorityclass(v=vs.90).aspx) to the server process (numeric value 0-5)
 * `ServiceName` - windows service name, used on install/uninstall only
 
-if config file doesn't exist, then default values will be used.
+if config file doesn't exist, then default values are used.
 
 
 

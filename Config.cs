@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Configuration;
+using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 
@@ -69,24 +70,65 @@ namespace nfkservice
             }
         }
 
-        private static int _processorAffinity;
+        private static int? _processorAffinity;
         public static int ProcessorAffinity
         {
             get
             {
-                if (_processorAffinity > 0)
-                    return _processorAffinity;
+                if (_processorAffinity != null)
+                    return (int)_processorAffinity;
+
+                _processorAffinity = 0xFF; // default first 8 processors
 
                 int value;
-                int.TryParse(GetConfigurationValue("ProcessorAffinity"), System.Globalization.NumberStyles.HexNumber, null, out value);
-                _processorAffinity = (value > 0) ? value : 0xFF;
+                if (int.TryParse(GetConfigurationValue("ProcessorAffinity"), System.Globalization.NumberStyles.HexNumber, null, out value))
+                    if (value > 0)
+                        _processorAffinity = value;
 
-                return _processorAffinity;
+                return (int)_processorAffinity;
             }
         }
 
+        private static ProcessPriorityClass? _processorPriority;
+        public static ProcessPriorityClass ProcessorPriority
+        {
+            get
+            {
+                if (_processorPriority != null)
+                    return (ProcessPriorityClass)_processorPriority;
 
+                _processorPriority = ProcessPriorityClass.AboveNormal; // default above normal
 
+                int value;
+                if (int.TryParse(GetConfigurationValue("ProcessorPriority"), out value))
+                {
+                    switch (value)
+                    {
+                        case 0:
+                            _processorPriority = ProcessPriorityClass.Idle;
+                            break;
+                        case 1:
+                            _processorPriority = ProcessPriorityClass.BelowNormal;
+                            break;
+                        case 2:
+                            _processorPriority = ProcessPriorityClass.Normal;
+                            break;
+                        case 3:
+                            _processorPriority = ProcessPriorityClass.AboveNormal;
+                            break;
+                        case 4:
+                            _processorPriority = ProcessPriorityClass.High;
+                            break;
+                        case 5:
+                            _processorPriority = ProcessPriorityClass.RealTime;
+                            break;
+                    }
+                }
+
+                return (ProcessPriorityClass)_processorPriority;
+            }
+        }
+        
         private static string GetConfigurationValue(string key)
         {
             Assembly service = Assembly.GetAssembly(typeof(Program));

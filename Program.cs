@@ -43,7 +43,6 @@ namespace nfkservice
                 Environment.Exit(0);
             }
 
-
             // console mode
             if (Environment.UserInteractive)
             {
