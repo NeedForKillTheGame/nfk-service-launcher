@@ -21,21 +21,23 @@ Console Launcher for NFK dedicated server ([Need For Kill](http://needforkill.ru
 
 ### Config
 
-You can define custom variables in `nfkservice.exe.config`:
+There are custom parameters can be defined in `nfkservice.exe.config`:
 * `ServerExeFile` - path to server.dat (nfk dedicated server executable)
 * `ExeParameters` - parameters to start nfk
 * `LogFile` - realtime log from nfk
-* `ProcessorAffinity` - set processor [affinity]( http://msdn.microsoft.com/en-us/library/vstudio/system.diagnostics.process.processoraffinity(v=vs.90).aspx) mask to the server process (hex value)
-* `ProcessorPriority` - set processor [priority](http://msdn.microsoft.com/en-us/library/vstudio/system.diagnostics.processpriorityclass(v=vs.90).aspx) to the server process (numeric value 0-5)
-* `ServiceName` - windows service name, used on install/uninstall only
+* `ProcessorAffinity` - set [processor affinity](http://bit.ly/ZWkGpM) mask to the server process (decimal value)
+* `ProcessorPriority` - set [processor priority](http://bit.ly/Urr7Rn) to the server process (numeric value 0-5)
+* `ServiceName` - windows service name, used on install/uninstall event only
 
 if config file doesn't exist, then default values are used.
 
 
 
-### Install as a windows service
+### Installation as a windows service
 
 Just run launcher with one of the parameters:
 
-* `nfkservice.exe /i` or `/install` - install new service
-* `nfkservice.exe /u` or `/uninstall` - uninstall exist service
+* `/install` or `/i` - install new service
+* `/uninstall` or `/u` - uninstall exist service
+
+For example: `nfkservice.exe /i`

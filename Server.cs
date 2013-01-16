@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.IO;
 using System.Runtime.InteropServices;
+using System.Security;
 using System.Text;
 using System.Threading;
 
@@ -62,14 +63,16 @@ namespace nfkservice
 
             process.Start();
 
-           // wait a second (if no wait then window handle will be 0)
-            Thread.Sleep(500);
+            // wait a second (if no wait then window handle will be 0)
+            Thread.Sleep(1000);
 
             if (isDestroy)
                 return;
 
             process.ProcessorAffinity = (IntPtr)Config.ProcessorAffinity;
-            process.PriorityClass = Config.ProcessorPriority;
+            process.PriorityClass = Config.ProcessorPriority; // doesn't work when running as a service
+            Process.GetCurrentProcess().PriorityClass = Config.ProcessorPriority; // works when running as a service
+
 
             // get control handles
             mainHandle = process.MainWindowHandle;
