@@ -75,6 +75,7 @@ namespace nfkservice
 
 
             // get control handles
+            // FIXME: doesn't work with windows service :(
             mainHandle = process.MainWindowHandle;
 
             ShowWindow(mainHandle, SW_HIDE); // hide main window
@@ -82,13 +83,15 @@ namespace nfkservice
             inputHandle = FindWindowEx(mainHandle, new IntPtr(0), "TEdit", null);
             sendHandle = FindWindowEx(mainHandle, new IntPtr(0), "TButton", null);
 
+            Log.Debug(string.Format("Handles: {0}, {1}, {2}, {3}", mainHandle.ToString(), textHandle.ToString(), inputHandle.ToString(), sendHandle.ToString()));
+
 
             // write console log to file
             while (!process.HasExited)
             {
                 Log.Push(GetOutput(textHandle));
 
-                // second interfal to fetch log from the NFK window
+                // a second interval to fetch log from the NFK window
                 Thread.Sleep(1000);
             }
 

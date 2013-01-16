@@ -9,13 +9,13 @@ namespace nfkservice
           Assembly.GetExecutingAssembly().Location;
         public static bool InstallMe()
         {
-            try { ManagedInstallerClass.InstallHelper(new[] { exePath }); }
+            try { ManagedInstallerClass.InstallHelper(new[] { "/LogFile=", exePath }); }
             catch { return false; }
             return true;
         }
         public static bool UninstallMe()
         {
-            try { ManagedInstallerClass.InstallHelper(new[] { "/u", exePath }); }
+            try { ManagedInstallerClass.InstallHelper(new[] { "/LogFile=", "/u", exePath }); }
             catch { return false; }
             return true;
         }

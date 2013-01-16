@@ -20,6 +20,7 @@ namespace nfkservice
             // set service name
             this.serviceInstaller1.DisplayName = Config.ServiceName;
             this.serviceInstaller1.ServiceName = Config.ServiceName;
+            this.serviceInstaller1.Description = Config.Title;
         }
 
         protected override void OnBeforeUninstall(System.Collections.IDictionary savedState)
@@ -29,6 +30,7 @@ namespace nfkservice
             // set service name
             this.serviceInstaller1.DisplayName = Config.ServiceName;
             this.serviceInstaller1.ServiceName = Config.ServiceName;
+            this.serviceInstaller1.Description = Config.Title;
         }
 
     }

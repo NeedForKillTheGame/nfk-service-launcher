@@ -57,7 +57,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AutoUpdate.cs" />
     <Compile Include="Config.cs" />
+    <Compile Include="Ini.cs" />
     <Compile Include="Log.cs" />
     <Compile Include="ProjectInstaller.cs">
       <SubType>Component</SubType>

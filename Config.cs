@@ -9,6 +9,20 @@ namespace nfkservice
     class Config
     {
 
+        private static string _title;
+        public static string Title
+        {
+            get
+            {
+                if (_title != null)
+                    return _title;
+
+                var value = GetConfigurationValue("Title");
+                _title = value ?? "Need For Kill - Dedicated Server";
+
+                return _title;
+            }
+        }
 
         private static string _serverExeFile;
         public static string ServerExeFile
@@ -128,7 +142,42 @@ namespace nfkservice
                 return (ProcessPriorityClass)_processorPriority;
             }
         }
-        
+
+
+
+        private static bool? _autoUpdate;
+        public static bool AutoUpdate
+        {
+            get
+            {
+                if (_autoUpdate != null)
+                    return (bool)_autoUpdate;
+
+                _autoUpdate = true; // default true
+
+                bool value;
+                if (bool.TryParse(GetConfigurationValue("AutoUpdate"), out value))
+                    _autoUpdate = value;
+
+                return (bool)_autoUpdate;
+            }
+        }
+
+        private static string _autoUpdateUrl;
+        public static string AutoUpdateUrl
+        {
+            get
+            {
+                if (_autoUpdateUrl != null)
+                    return _autoUpdateUrl;
+
+                var value = GetConfigurationValue("AutoUpdateUrl");
+                _autoUpdateUrl = value ?? "http://nfk.pro2d.ru/files/update/Server/nfkupdate.xml";
+
+                return _autoUpdateUrl;
+            }
+        }
+
         private static string GetConfigurationValue(string key)
         {
             Assembly service = Assembly.GetAssembly(typeof(Program));
