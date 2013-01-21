@@ -38,12 +38,11 @@ namespace nfkservice
                     line = new StringBuilder();
                 }
             }
-                
-            Write(appendtext.ToString());
+
+            Console.Write(appendtext.ToString());
 
             oldtext.Append(text.Substring(oldtextlength, text.Length - oldtextlength));
         }
-
 
         public static void Error(string text)
         {
@@ -58,23 +57,23 @@ namespace nfkservice
         public static void Debug(string text)
         {
 #if DEBUG
-            Write(String.Format("\n[{0}] [DEBUG] {1}\n\n", DateTime.Now, text));
+            Console.Write(String.Format("\n[{0}] [DEBUG] {1}\n\n", DateTime.Now, text));
 #endif
         }
 
+        // write to log
         static void Write(string text)
         {
             try
             {
-                using (StreamWriter w = File.AppendText( Path.GetDirectoryName(Config.ServerExeFile) + "/" + Config.LogFile) )
-                {
+                using (StreamWriter w = File.AppendText(Config.WorkingDirectory + "\\" + Config.LogFile))
                     w.Write(text);
-                    Console.Write(text);
-                }
+
+                Console.Write(text);
             }
             catch (Exception)
             {
-                Console.WriteLine("Can't write to log " + Path.GetDirectoryName(Config.ServerExeFile) + "/" + Config.LogFile);
+                Console.WriteLine("Can't write to log " + Config.WorkingDirectory + "\\" + Config.LogFile);
             }
         }
     }

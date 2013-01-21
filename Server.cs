@@ -18,6 +18,7 @@ namespace nfkservice
         private static extern int ShowWindow(IntPtr hwnd, int nCmdShow);
 
         const int SW_HIDE = 0;
+        const int SW_SHOW = 5;
 
         const int WM_GETTEXT = 0x0D;
         const int WM_GETTEXTLENGTH = 0x0E;
@@ -47,51 +48,57 @@ namespace nfkservice
         [STAThread]
         private static void StartNFK()
         {
-            // TODO: run without window on start
-            process = new Process
+            // FIXME: run without window on start
+            process = new Process()
             {
                 StartInfo = new ProcessStartInfo
                 {
                     FileName = Config.ServerExeFile,
-                    WorkingDirectory = Path.GetDirectoryName(Config.ServerExeFile),
+                    WorkingDirectory = Config.WorkingDirectory,
                     Arguments = Config.ExeParameters,
                     UseShellExecute = false,
+                    RedirectStandardOutput = true,
                     WindowStyle = ProcessWindowStyle.Hidden,
                     CreateNoWindow = true
                 }
             };
 
             process.Start();
+            
+            if (Environment.UserInteractive)
+            {
+                // wait a second (if no wait then window handle will be 0)
+                Thread.Sleep(1000);
 
-            // wait a second (if no wait then window handle will be 0)
-            Thread.Sleep(1000);
+                if (isDestroy)
+                    return;
 
-            if (isDestroy)
-                return;
 
+                // get control handles
+                // it doesn't work with a windows service but it isn't needed there
+                mainHandle = process.MainWindowHandle;
+
+                ShowWindow(mainHandle, SW_HIDE); // hide main window
+                textHandle = FindWindowEx(mainHandle, new IntPtr(0), "TMemo", null);
+                inputHandle = FindWindowEx(mainHandle, new IntPtr(0), "TEdit", null);
+                sendHandle = FindWindowEx(mainHandle, new IntPtr(0), "TButton", null);
+
+                Log.Debug(string.Format("Handles: {0}, {1}, {2}, {3}", mainHandle.ToString(), textHandle.ToString(), inputHandle.ToString(), sendHandle.ToString()));
+
+                process.PriorityClass = Config.ProcessorPriority; // process priority - doesn't work when running as a service
+            }
+            else
+                Process.GetCurrentProcess().PriorityClass = Config.ProcessorPriority; // process priority - works when running as a service
+            
             process.ProcessorAffinity = (IntPtr)Config.ProcessorAffinity;
-            process.PriorityClass = Config.ProcessorPriority; // doesn't work when running as a service
-            Process.GetCurrentProcess().PriorityClass = Config.ProcessorPriority; // works when running as a service
 
 
-            // get control handles
-            // FIXME: doesn't work with windows service :(
-            mainHandle = process.MainWindowHandle;
-
-            ShowWindow(mainHandle, SW_HIDE); // hide main window
-            textHandle = FindWindowEx(mainHandle, new IntPtr(0), "TMemo", null);
-            inputHandle = FindWindowEx(mainHandle, new IntPtr(0), "TEdit", null);
-            sendHandle = FindWindowEx(mainHandle, new IntPtr(0), "TButton", null);
-
-            Log.Debug(string.Format("Handles: {0}, {1}, {2}, {3}", mainHandle.ToString(), textHandle.ToString(), inputHandle.ToString(), sendHandle.ToString()));
-
-
-            // write console log to file
+            // wait for process end
             while (!process.HasExited)
             {
-                Log.Push(GetOutput(textHandle));
-
-                // a second interval to fetch log from the NFK window
+                if (Environment.UserInteractive)
+                    Log.Push(GetOutput(textHandle)); // fetch log lines from the NFK window
+         
                 Thread.Sleep(1000);
             }
 
@@ -104,6 +111,7 @@ namespace nfkservice
             Start();
         }
 
+        
         /// <summary>
         /// Send command to NFK console
         /// </summary>
@@ -123,7 +131,7 @@ namespace nfkservice
         }
 
         /// <summary>
-        /// Return output from NFK console
+        /// Return log output from nfk console
         /// </summary>
         /// <param name="hWnd"></param>
         /// <returns></returns>
@@ -139,6 +147,9 @@ namespace nfkservice
 
 
         private static bool isDestroy = false;
+        /// <summary>
+        /// Kill nfk server process
+        /// </summary>
         public static void Destroy()
         {
             isDestroy = true;

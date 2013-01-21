@@ -7,13 +7,11 @@ namespace nfkservice
 {
     class AutoUpdate
     {
-        private string workingDirectory;
         private IniFile iniFile;
 
         public AutoUpdate()
         {
-            workingDirectory = Path.GetDirectoryName(Config.ServerExeFile);
-            iniFile = new IniFile(workingDirectory + @"\basenfk\nfksetup.ini");
+            iniFile = new IniFile(Config.WorkingDirectory + @"\basenfk\nfksetup.ini");
 
         }
 
@@ -39,7 +37,7 @@ namespace nfkservice
                 
                 if (RemoteVersion > LocalVersion)
                 {
-                    Log.Info(string.Format("Remote version({0}) > Local version({1}). Starting update...", RemoteVersion, LocalVersion));
+                    Log.Info(string.Format("RemoteVersion({0}) > LocalVersion({1}). Starting update...", RemoteVersion, LocalVersion));
 
                     // download updated files
                     foreach (XmlNode node in xmlDoc.DocumentElement.ChildNodes)
@@ -51,7 +49,7 @@ namespace nfkservice
                                     remoteFile = Config.AutoUpdateUrl.Remove(Config.AutoUpdateUrl.Length - Path.GetFileName(Config.AutoUpdateUrl).Length - 1) + remoteFile; // full path
 
                                 var localFile = file.Attributes["dir"].Value + file.InnerText; // relative path
-                                localFile = workingDirectory + localFile; // full path
+                                localFile = Config.WorkingDirectory + localFile; // full path
 
                                 downloadFile(remoteFile, localFile);
                             }
