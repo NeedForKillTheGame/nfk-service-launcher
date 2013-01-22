@@ -111,7 +111,7 @@ namespace nfkservice
         {
             private readonly int _timeout;
 
-            public MyWebClient(int timeout = 2000)
+            public MyWebClient(int timeout = 5000)
             {
                 _timeout = timeout;
             }
