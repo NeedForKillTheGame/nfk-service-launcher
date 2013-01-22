@@ -84,14 +84,10 @@ namespace nfkservice
                 sendHandle = FindWindowEx(mainHandle, new IntPtr(0), "TButton", null);
 
                 Log.Debug(string.Format("Handles: {0}, {1}, {2}, {3}", mainHandle.ToString(), textHandle.ToString(), inputHandle.ToString(), sendHandle.ToString()));
-
-                process.PriorityClass = Config.ProcessorPriority; // process priority - doesn't work when running as a service
             }
-            else
-                Process.GetCurrentProcess().PriorityClass = Config.ProcessorPriority; // process priority - works when running as a service
-            
-            process.ProcessorAffinity = (IntPtr)Config.ProcessorAffinity;
 
+            process.ProcessorAffinity = (IntPtr)Config.ProcessorAffinity;
+            process.PriorityClass = Config.ProcessorPriority; 
 
             // wait for process end
             while (!process.HasExited)
