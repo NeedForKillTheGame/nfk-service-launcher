@@ -14,15 +14,22 @@ $(document).ready(function()
 	for (i = 1; i <= instance_count; i++)
 		loadServers(i);
 
+		
 
+	// handle enter key to lose focuse from input (when change server name)
+	$(".servers-container :input").live('keypress', function(e) {
+		if(e.which == 13) {
+			$(this).blur();
+		}
+	});
+		
 	// handle enter key to send console command
-	$(document).keypress(function(e) {
+	$("#ctext").keypress(function(e) {
 		if(e.which == 13) {
 			scc();
 		}
 	});
-	
-	
+
 });
 
 
@@ -232,8 +239,7 @@ function showconsole(id, instance_id)
 			$.modal.close(); // must call this!
 		}
 	});
-	
-	
+
 	return false;
 }
 

@@ -2,3 +2,4 @@ nfkservice/bin
 nfkservice/obj
 www/server/config.php
 www/client/config.php
+www/client/logs

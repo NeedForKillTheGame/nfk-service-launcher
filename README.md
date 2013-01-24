@@ -54,7 +54,9 @@ For example: `nfkservice.exe /i`
 * `sc stop NFK` - start service
 
 <br />
-### Web Interface to control servers
+## Web Interface to control servers
 
 * [API](https://github.com/HarpyWar/nfk-service-launcher/wiki/Web%20API)
 
+[![](http://habrastorage.org/storage2/015/1db/0fa/0151db0fadb433ae9dde92898aca63ef.png)](http://habrastorage.org/storage2/09d/c84/a9c/09dc84a9cb9d05856e2524212fd7ca1c.png)
+[![](http://habrastorage.org/storage2/c36/ab9/57c/c36ab957c522cd1b89aeb60f42c0424d.png)](http://habrastorage.org/storage2/26d/48a/739/26d48a73981971a632ab1708a1423f2d.png)

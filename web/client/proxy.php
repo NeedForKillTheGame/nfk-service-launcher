@@ -4,7 +4,7 @@ require_once('config.php');
 // proxy gateway to another instances
 if ( isset($_GET['instance']) )
 {
-	$remote_path = ( array_key_exists($_GET['instance'], Config::$Instances) )
+	$api_url = ( array_key_exists($_GET['instance'], Config::$Instances) )
 		? Config::$Instances[$_GET['instance']]['url']
 		: false;
 	
@@ -12,11 +12,11 @@ if ( isset($_GET['instance']) )
 	{
 		require_once('auth.inc.php');
 		
-		if (!$remote_path)
+		if (!$api_url)
 			throw new Exception('Bad instance ID');
 	
 		
-		if ( $data = file_get_contents( $remote_path . '&' . $_SERVER['QUERY_STRING'] ) )
+		if ( $data = file_get_contents( $api_url . '&' . $_SERVER['QUERY_STRING'] ) )
 		{
 			echo $data;
 			
