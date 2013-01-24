@@ -43,19 +43,13 @@ namespace nfkservice
                 Environment.Exit(0);
             }
 
-            // set console title
-            if (Environment.UserInteractive)
-                Console.Title = Config.Title;
-
-
-            // autoupdate nfk server files
-            if (Config.AutoUpdate)
-                new AutoUpdate().Run();
-
+            
 
             // console mode
             if (Environment.UserInteractive)
             {
+                Console.Title = Config.Title;
+
                 // register console close event
                 _consoleHandler = new ConsoleCtrlHandlerDelegate(ConsoleEventHandler);
                 SetConsoleCtrlHandler(_consoleHandler, true);

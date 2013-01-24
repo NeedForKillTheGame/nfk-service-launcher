@@ -32,8 +32,13 @@ namespace nfkservice
         private static IntPtr inputHandle;
         private static IntPtr sendHandle;
 
-        
-        
+
+        static Server() 
+        {
+            // autoupdate nfk server files
+            if (Config.AutoUpdate)
+                new AutoUpdate().Run();
+        }
         
         /// <summary>
         /// start nfk dedicated in new thread
