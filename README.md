@@ -11,7 +11,7 @@ Console Launcher for NFK dedicated server ([Need For Kill](http://needforkill.ru
 * Autorestart NFK server when it crashed
 * Set processor affinity and priority to NFK server process
 * Easy to install as a windows service
-* Autoupdate NFK server files ([optional](https://github.com/HarpyWar/nfk-service-launcher/wiki/%D0%90%D0%B2%D1%82%D0%BE%D0%BE%D0%B1%D0%BD%D0%BE%D0%B2%D0%BB%D0%B5%D0%BD%D0%B8%D0%B5))
+* Autoupdate NFK server files ([how it works?](https://github.com/HarpyWar/nfk-service-launcher/wiki/%D0%90%D0%B2%D1%82%D0%BE%D0%BE%D0%B1%D0%BD%D0%BE%D0%B2%D0%BB%D0%B5%D0%BD%D0%B8%D0%B5))
 
 ### Requirements
 * [.NET Framework 3.5](http://www.microsoft.com/en-us/download/details.aspx?id=21) (but it can be compiled with version >=2.0)
@@ -52,3 +52,9 @@ For example: `nfkservice.exe /i`
 
 * `sc stop NFK` - stop service
 * `sc stop NFK` - start service
+
+<br />
+### Web Interface to control servers
+
+* [API](https://github.com/HarpyWar/nfk-service-launcher/wiki/Web%20API)
+

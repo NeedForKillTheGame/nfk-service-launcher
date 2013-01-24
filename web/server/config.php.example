@@ -1,0 +1,13 @@
+<?php
+
+class Config
+{
+	// access key to the script from external
+	public static $ApiKey = "1d4060d5-84a6-4d4b-9b31-c7cb3206f317";
+	
+	// path to NFK servers directory (backslash at the end of path is needed)
+	public static $ServerPath = 'c:\\servers\\nfk\\';
+	
+	// servers enumeration as ports
+	public static $Servers = array(29991, 29992);
+}

@@ -1,0 +1,24 @@
+<?php
+
+class Config
+{
+	// allowed users
+	public static $Users = array (
+		'admin' => 'Pa$$w0rd',
+	);
+
+	// machine instances with nfk server api controller
+	//  start with 1 and increment by 1
+	public static $Instances = array (
+		1 => array (
+			'title' => 'Machine #1',
+			'url' => 'http://example1.com/nfkcontrol/api.php?apikey=1d4060d5-84a6-4d4b-9b31-c7cb3206f317'
+		),
+		2 => array (
+			'title' => 'Machine #2',
+			'url' => 'http://example2.com/nfkcontrol/api.php?apikey=1d4060d5-84a6-4d4b-9b31-c7cb3206f317'
+		)
+	);
+	
+}
+
