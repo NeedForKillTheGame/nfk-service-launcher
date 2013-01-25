@@ -7,14 +7,7 @@ require_once('auth.inc.php');
 <html>
     <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-
-<link type='text/css' href='css/main.css' rel='stylesheet' media='screen' />
-<link type='text/css' href='css/basic.css' rel='stylesheet' media='screen' />
-
-<!-- IE6 "fix" for the close png image -->
-<!--[if lt IE 7]>
-<link type='text/css' href='css/basic_ie.css' rel='stylesheet' media='screen' />
-<![endif]-->
+	<link type='text/css' href='css/main.css' rel='stylesheet' media='screen' />
 
 </head>
 <body>
@@ -81,17 +74,39 @@ require_once('auth.inc.php');
 
 
 <!-- console modal message -->
-<div id="basic-modal-content">
-<form onsubmit="return false;">
-	<h3>NFK Console &mdash; <span id="console-title"></span></h3>
-	<p>
-	<textarea id="clog" readonly>Initializing console...
-</textarea>
+<div id="console-modal">
+
+	<textarea id="clog" readonly>Initializing console...</textarea>
 	<br>
 	<input id="ctext" type="text" value="" />
-	</p>
-</form>
+	
 </div>
+
+
+<div id="file-modal" title="NFK Config">
+	<div id="tabs">
+
+		<ul>
+		<?php foreach (Config::$Files as $i => $f): ?>
+			<li><a href="#tabs-<?php echo $i; ?>"><?php echo $f; ?></a></li>
+		<?php endforeach; ?>
+		</ul>
+
+		<?php foreach (Config::$Files as $i => $f): ?>
+		<div id="tabs-<?php echo $i; ?>">
+			<textarea id="ftext-<?php $i ?>">Loading config...</textarea>
+		</div>
+		<?php endforeach; ?>
+		
+		<div class="button-container">
+			<button id="fsave">Save</button>
+			<button id="fcancel">Cancel</button>
+		</div>
+		<div class="clear"></div>
+	</div>
+</div>
+
+
 
 <script language="javascript">
 
@@ -100,12 +115,13 @@ var instance_count = <?php echo count(Config::$Instances) ?>;
 </script>
 
 
+<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.0/themes/base/jquery-ui.css" />
 
-<script type='text/javascript' src='js/jquery-1.8.3.min.js'></script>
+<script type='text/javascript' src='http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js'></script>
+<script src="http://code.jquery.com/ui/1.10.0/jquery-ui.js"></script>
 <script type="text/javascript" src="js/noty/jquery.noty.js"></script>
 <script type="text/javascript" src="js/noty/layouts/topRight.js"></script>
 <script type="text/javascript" src="js/noty/themes/default.js"></script>
-<script type='text/javascript' src='js/jquery.simplemodal.js'></script>
 
 <script type='text/javascript' src='js/app.js'></script>
 </body>

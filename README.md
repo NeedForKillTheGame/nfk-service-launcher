@@ -57,7 +57,8 @@ For example: `nfkservice.exe /i`
 <br />
 ## Web Interface to control servers
 
-* [API](https://github.com/HarpyWar/nfk-service-launcher/wiki/Web%20API)
+* [Web API](https://github.com/HarpyWar/nfk-service-launcher/wiki/Web%20API)
 
-[![](http://habrastorage.org/storage2/f7b/422/162/f7b42216234ebfef98c37679ef23af9b.png)](http://habrastorage.org/storage2/09d/c84/a9c/09dc84a9cb9d05856e2524212fd7ca1c.png)
-[![](http://habrastorage.org/storage2/3c2/764/95d/3c276495d9aae1f6e9137976509f8a35.png)](http://habrastorage.org/storage2/26d/48a/739/26d48a73981971a632ab1708a1423f2d.png)
+[![](http://habrastorage.org/storage2/72a/c7c/bf4/72ac7cbf4a7cc64e3ea4673f12af5d43.jpg)](http://habrastorage.org/storage2/cb6/905/907/cb69059075cdc573a61dbdb67fc50722.png)
+[![](http://habrastorage.org/storage2/11f/66c/508/11f66c508178ff0509aeeab2efa241d2.jpg)](http://habrastorage.org/storage2/1c3/32f/2c0/1c332f2c04642362ea9b2607356d9f29.png)
+[![](http://habrastorage.org/storage2/edd/9fb/d1e/edd9fbd1e1afa6072ceb469cb8cbc16a.jpg)](http://habrastorage.org/storage2/215/25f/751/21525f75109b38dad7ebf5ff9e5da53f.png)

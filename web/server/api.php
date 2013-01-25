@@ -3,6 +3,7 @@
 // (c) 2013 HarpyWar (harpywar@gmail.com)
 // http://harpywar.com
 
+#max_execution_time(10);
 
 require_once("config.php");
 
@@ -26,7 +27,7 @@ if ($action == 'serverlist' ||
 	$action == 'getlog' ||
 	$action == 'scc' ||
 	$action == 'getfile' ||
-	$action == 'editfile')
+	$action == 'savefile')
 try
 {
 	// auth
@@ -147,7 +148,7 @@ function start($id)
 function stop($id)
 {
     $result = _cmd($id, 'stop');
-	$status = ( strstr($result, 'STOP_PENDING') || strstr($result, 'STOPPED') ) ? true : false;;
+	$status = ( strstr($result, 'STOP_PENDING') || strstr($result, 'STOPPED') ) ? true : false;
 
 	return $status;
 }
@@ -155,7 +156,7 @@ function stop($id)
 function status($id)
 {
     $result = _cmd($id, 'query');
-	$status = strstr($result, 'RUNNING') ? true : false;
+	$status = ( strstr($result, 'RUNNING') || strstr($result, 'START_PENDING') ) ? true : false;
 	
 	return $status;
 }
@@ -236,13 +237,13 @@ function editname($id)
 		return false;
 
 	// replace old to new
+	$_GET['file'] = 'server.cfg';
 	$data = getfile($id);
 
 	$data = str_replace("sv_hostname {$oldname}", "sv_hostname {$newname}", $data);
 
-	// save changes
-	$_POST['data'] = $data;
-	editfile($id);
+	// save changes to file
+	_savefile($id, $data);
 	
 	return $newname;
 }
@@ -313,7 +314,7 @@ function scc($id)
 	if ( !isset($_GET['cmd']) || strlen(trim($_GET['cmd'])) == 0 )
 		throw new Exception('Console command can\'t be empty');
 	
-	$cmd = "\n" . _utf8_urldecode($_GET['cmd']);;
+	$cmd = "\n" . _utf8_urldecode($_GET['cmd']);
 	$cmd = iconv("UTF-8", "CP1251", $cmd);
 	
 	// append command to the scc.cfg (it will be executed by bot.dll)
@@ -340,15 +341,28 @@ function getfile($id)
 
 	return $data;
 }
-// put new content from $_POST['data'] to the file
-function editfile($id)
+
+// put new content from $_GET['url'] to the file $_GET['file']
+function savefile($id)
 {
 	$filename = _getfilename($id);
 	
-	if ( !isset($_POST['data']) )
-		throw new Exception('Empty file content');
+	if ( !isset($_GET['url']) )
+		throw new Exception('Url to download file must not be empty');
 	
-	$data = $_POST['data']; // file content
+	if (!$data = @file_get_contents( _utf8_urldecode($_GET['url']) ) ) // get file content
+		throw new Exception('Downloaded file data is empty');
+		
+	if ( !@file_put_contents($filename, $data) )
+		throw new Exception('Can\'t save ' . $filename);
+	
+	return true;
+}
+
+// save local file
+function _savefile($id, $data)
+{
+	$filename = _getfilename($id);
 	
 	if ( !@file_put_contents($filename, $data) )
 		throw new Exception('Can\'t save ' . $filename);
@@ -369,13 +383,18 @@ function _getfilename($id)
 	
 	switch($file)
 	{
+		case 'nfksetup.ini':	
 		case 'maplist.txt':
 			$path = '\BASENFK\\';
 			break;
-		case 'realtime.log':
-		case 'scc.cfg':
+
+		case 'autoexec.cfg':
+		case 'message.cfg':
 		case 'server.cfg':
 		case 'startup.cfg':
+		case 'nfkconfig.cfg':		
+		case 'realtime.log':
+		case 'scc.cfg':
 			$path = '\SERVER\\';
 			break;
 			

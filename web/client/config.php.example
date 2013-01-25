@@ -20,5 +20,15 @@ class Config
 		)
 	);
 	
+	// files allowed to edit on server
+	public static $Files = array (
+		'maplist.txt',
+		'server.cfg',
+		'message.cfg',
+		'startup.cfg',
+		'autoexec.cfg',
+		'nfkconfig.cfg',
+		'nfksetup.ini',
+	);
 }
 

@@ -1,12 +1,11 @@
 // selected console
-var console_handle;
-var console_id;
+var console_handle = 0;
+var console_id = 0;
 var console_instance_id;
 var console_pos = 0;
 
 // array of servers [instance_id][server_id] = server_title
 var servers = [];
-
 
 var i;
 $(document).ready(function()
@@ -15,11 +14,11 @@ $(document).ready(function()
 		loadServers(i);
 
 		
-
 	// handle enter key to lose focuse from input (when change server name)
 	$(".servers-container :input").live('keypress', function(e) {
 		if(e.which == 13) {
 			$(this).blur();
+			return false;
 		}
 	});
 		
@@ -27,9 +26,28 @@ $(document).ready(function()
 	$("#ctext").keypress(function(e) {
 		if(e.which == 13) {
 			scc();
+			return false;
 		}
 	});
-
+	
+	$( "#tabs" ).tabs({
+	  activate: function( event, ui ) {
+		loadfile( console_id, console_instance_id, getTabSelectedIndex() );
+	  }
+	});
+	
+	// set tab orientation = vertical
+	$( "#tabs" ).tabs().addClass( "ui-tabs-vertical ui-helper-clearfix" );
+    $( "#tabs li" ).removeClass( "ui-corner-top" ).addClass( "ui-corner-left" );
+	
+	// save and cancel buttons in files dialog
+	$("#fsave").click(function(e) {
+		savefile( console_id, console_instance_id, getTabSelectedIndex() );
+	});
+	$("#fcancel").click(function(e) {
+		$("#file-modal").dialog('close');
+	});
+	
 });
 
 
@@ -49,10 +67,11 @@ function loadServers(instance_id)
 			$.each(data.result, function()
 			{
 				servers[instance_id][this.id] = [];
-				servers[instance_id][this.id] = this.hostname;
+				servers[instance_id][this.id].hostname = this.hostname;
+				servers[instance_id][this.id].status = this.status;
 				
 				var html_id = this.id + '_' + instance_id;
-				$('#instance' + instance_id + ' > tbody:last').before('<tr><td><a href="#" onclick="return showconsole(' + this.id + ', ' + instance_id + ')" title="Open console"><img id="image' + html_id + '" src="" border=0 width=16 height=16></a>&nbsp;<span class="hostname" id="hostname' + html_id + '" onclick="editname(' + this.id + ', ' + instance_id + ')">' + this.hostname + '</span><input id="hostedit' + html_id + '" onfocusout="savename(' + this.id + ', ' + instance_id + ')" value="' + this.hostname + '"></td><td><button id="button' + html_id + '" onclick="control(' + this.id + ', ' + instance_id + ')"></button></td></tr>');
+				$('#instance' + instance_id + ' > tbody:last').before('<tr><td><a href="#" onclick="return showfiles(' + this.id + ', ' + instance_id + ')" title="Config editor"><img id="config_image' + html_id + '" src="img/config.png" border=0 width=16 height=16></a>&nbsp;<a href="#" onclick="return showconsole(' + this.id + ', ' + instance_id + ')" title="Console"><img id="console_image' + html_id + '" src="" border=0 width=16 height=16></a>&nbsp;<span class="hostname" id="hostname' + html_id + '" onclick="editname(' + this.id + ', ' + instance_id + ')">' + this.hostname + '</span><input id="hostedit' + html_id + '" onfocusout="savename(' + this.id + ', ' + instance_id + ')" value="' + this.hostname + '"></td><td><button id="button' + html_id + '" onclick="control(' + this.id + ', ' + instance_id + ')"></button></td></tr>');
 				changeStatus(html_id, this.status);
 			});
 			$("#loading" + instance_id).hide();
@@ -83,11 +102,16 @@ function start(id, instance_id)
 		if (data.result)
 		{
 			msgSuccess('Server ' + $("#hostname" + html_id).html() + ' started');
-			changeStatus(html_id, true);
+			changeStatus( html_id, true );
+		}
+		else
+		{
+			if (data.error)
+				msgError(data.error);
+				
+			getServerStatus(id, instance_id)
 		}
 		
-		if (data.error)
-			msgError(data.error);
 	})
 	.complete(function() {
 		$("#button" + html_id).attr('disabled', false);
@@ -102,16 +126,35 @@ function stop(id, instance_id)
 		if (data.result)
 		{
 			msgSuccess('Server ' + $("#hostname" + html_id).html() + ' stopped');
-			changeStatus(html_id, false);
+			changeStatus( html_id, false );
 		}
-		
-		if (data.error)
-			msgError(data.error);
+		else
+		{
+			if (data.error)
+				msgError(data.error);
+				
+			getServerStatus(id, instance_id)
+		}
 	})
 	.complete(function() {
 		$("#button" + html_id).attr('disabled', false);
 	});;
 }
+
+// get server status from api
+function getServerStatus(id, instance_id)
+{
+	var html_id = id + '_' + instance_id;
+	var status = false;
+	
+	$.getJSON('proxy.php?do=status&id=' + id + '&instance=' + instance_id, function(data) {
+		if (data.result)
+			status = data.result;
+		
+		changeStatus( html_id, status );
+	});
+}
+
 
 function changeStatus(id, status)
 {
@@ -120,14 +163,14 @@ function changeStatus(id, status)
 		$("#hostname" + id).css('color', 'black');
 		$("#hostname" + id).css('font-weight', 'bold');
 		$("#button" + id).html('Stop');
-		$("#image" + id).attr('src', 'img/console_on.png');
+		$("#console_image" + id).attr('src', 'img/console_on.png');
 	}
 	else
 	{
 		$("#hostname" + id).css('color', 'silver');
 		$("#hostname" + id).css('font-weight', 'normal');
 		$("#button" + id).html('Start');
-		$("#image" + id).attr('src', 'img/console_off.png');
+		$("#console_image" + id).attr('src', 'img/console_off.png');
 	}
 
 	$("#hostedit" + id).hide();
@@ -191,10 +234,12 @@ function showconsole(id, instance_id)
 	console_id = id;
 	console_instance_id = instance_id;
 
+	var log = $("#clog");
+	log.html('Initializing console...\n');
+	
 	// start refresh log each 3 seconds
 	console_handle = window.setInterval(function()
 	{
-		var log = $("#clog");
 		$.getJSON('proxy.php?do=getlog&id=' + console_id + '&instance=' + console_instance_id + '&pos=' + console_pos, function(data)
 		{
 			if (data.result)
@@ -214,32 +259,48 @@ function showconsole(id, instance_id)
 				breakconsole();
 			}
 				
-		
 		});
 	}, 4000);
 	
+	// set console visual style depending server status
+	if ( servers[instance_id][id].status )
+	{
+		log.removeClass('console-off').addClass('console-on');
+		$("#ctext").attr('disabled', false);
+	}
+	else
+	{
+		log.removeClass('console-on').addClass('console-off');
+		$("#ctext").attr('disabled', true);
+	}
 	
-
-	$("#console-title").html(servers[instance_id][id]);
-	
-	$('#basic-modal-content').modal({ 
-		escClose: true, 
-		onOpen: function (dialog) {
-			
-			dialog.overlay.fadeIn('medium', function () {
-				dialog.container.fadeIn('fast', function () {
-					dialog.data.fadeIn(0, function() {
-						$("#ctext").focus();
-					});
-				});
-			});
+	// console modal window
+	$("#console-modal").attr('title', "NFK Console — " + servers[instance_id][id].hostname);
+	$('#console-modal').dialog({
+		width: 800,
+		height: 575,
+		modal: true,
+		show: {
+			effect: "explode",
+			duration: 200
 		},
-		onClose: function (dialog) {
+		hide: {
+			effect: "explode",
+			duration: 500
+		},
+		close: function(event, ui) {
 			breakconsole();
-			$.modal.close(); // must call this!
+			$(this).dialog('destroy');
 		}
-	});
+    });
 
+	
+	// set focus on console input
+	$(document).bind('keydown', function() {
+		$("input#ctext").focus();
+	});
+	
+	
 	return false;
 }
 
@@ -247,7 +308,11 @@ function showconsole(id, instance_id)
 function breakconsole()
 {
 	window.clearInterval(console_handle); // unset timer
+	console_handle = 0;
 	console_pos = 0;
+	
+	// unbind console focus on keydown
+	$(document).unbind('keydown');
 }
 
 // send console command
@@ -266,6 +331,118 @@ function scc()
 	});
 	
 }
+
+
+
+/* CONFIG EDITOR */
+
+function showfiles(id, instance_id)
+{
+	console_id = id;
+	console_instance_id = instance_id;
+
+	
+	// first tab is activated so update content there
+	loadfile( console_id, console_instance_id, getTabSelectedIndex() );
+	console.log(getTabSelectedIndex());
+
+	// config modal window
+	$("#file-modal").attr('title', 'NFK Config — ' + servers[instance_id][id].hostname);
+	$('#file-modal').dialog({
+		width: 800,
+		height: 575,
+		modal: true,
+		show: {
+			effect: "explode",
+			duration: 200
+		},
+		hide: {
+			effect: "explode",
+			duration: 500
+		},
+		close: function(event, ui) {
+			$(this).dialog('destroy');
+		},
+    });
+
+	return false;
+}
+
+// load remote file into textarea
+function loadfile(id, instance_id, tab_index)
+{
+	var filename = $("#tabs>ul>li>a[href=#tabs-" + tab_index + "]").text()
+	var textarea = $("#tabs>div#tabs-" + tab_index + ">textarea");
+
+	// disable button
+	$("#fsave").attr('disabled', true);
+	textarea.attr('disabled', true); // disable edit text
+
+	$.getJSON('proxy.php?do=getfile&id=' + console_id + '&instance=' + console_instance_id + '&file=' + filename, function(data)
+	{
+		if (data.result != '')
+		{
+			textarea.val(data.result);
+			
+			// enable button
+			$("#fsave").attr('disabled', false);
+			textarea.attr('disabled', false); // enable edit text
+			textarea.focus();
+		}
+		
+		if (data.error)
+		{
+			msgError(data.error);
+			textarea.val(data.error);
+			$("#fsave").attr('disabled', true);
+			textarea.attr('disabled', true);
+		}
+	}).complete(  ); 
+	
+}
+
+// send file from textarea to server
+function savefile(id, instance_id, tab_index)
+{
+	var filename = $("#tabs>ul>li>a[href=#tabs-" + tab_index + "]").text()
+	var textarea = $("#tabs>div#tabs-" + tab_index + ">textarea");
+	
+	$("#fsave").attr('disabled', true);
+	
+	$.post('file.php', { data: textarea.val() }, function(data)
+	{
+		console.log(data);
+		
+		if (data.length == 32)
+		{
+			var url = window.location.origin + window.location.pathname + 'file.php?hash=' + data;
+			console.log(url);
+			
+			msgAlert('Sending ' + filename + ' ...');
+			
+			// send api request to update file on the server
+			$.getJSON('proxy.php?do=savefile&id=' + console_id + '&instance=' + console_instance_id + '&file=' + filename + '&url=' + escape(url), function(data)
+			{
+				msgSuccess(filename + " updated on the server");
+				
+				loadfile(id, instance_id, tab_index);
+			});
+		}
+		else
+			msgError(data);
+
+	});
+}
+
+
+// return files tab selected index
+function getTabSelectedIndex()
+{
+	return $("#tabs").tabs('option').active;
+}
+
+
+
 
 function msgSuccess(text)
 {

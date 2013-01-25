@@ -8,7 +8,7 @@ body { font-family: arial; font-size: 14px; }
 .servers select[multiple] { width: 100%; height: 8em; }
 .servers h2 { margin-top: 0.4em; }
 
-.ko-grid { margin-bottom: 1em; width: 21em; border: 1px solid silver; background-color:White; border-collapse: collapse }
+.ko-grid { margin-bottom: 1em; width: 25em; border: 1px solid silver; background-color:White; border-collapse: collapse }
 .ko-grid th { text-align:left; background-color: Black; color:White; }
 .ko-grid td, th { padding: 0.4em; }
 .ko-grid tr:nth-child(odd) { background-color: #DDD; }
@@ -47,24 +47,62 @@ li { list-style-type: disc; margin-left: 20px; }
 	background: #e1e1e1;
 }
 
-#basic-modal-content textarea {
-	width: 713px;
-	height: 417px;
-	color: #e1e1e1;
-	background: #0026FF;
+#console-modal textarea {
+	width: 760px;
+	height: 470px;
+
 	border: 0px;
 	padding: 3px;
 	
 	border: 1px solid gray;
 }
-#basic-modal-content input {
-	width: 716px;
+.console-on {
+	color: #e1e1e1;
+	background: #0026FF;
+}
+.console-off {
+	color: black;
+	background: #e1e1e1;
+}
+
+#console-modal input {
+	width: 763px;
 	height: 28px;
 	font-size: 16px;
 	color: black;
-	background: #e1e1e1;
 	border: 0px;
 	
 	padding-left: 3px;
 	border: 1px solid gray;
 }
+
+#console-modal, #file-modal{display:none;}
+
+#file-modal textarea {
+	margin-top: -270px;
+	margin-left: 40px;
+	width: 581px;
+	height: 450px;
+	border: 0px;
+	padding: 3px;
+	border: 1px solid gray;
+}
+#file-modal .button-container {
+	margin-top: -15px;
+	float: right;
+	text-align: right;
+	width: 100%;
+}
+#file-modal button {
+	margin-right: 7px;
+	
+	width: 100px;
+	height: 35px;
+}
+
+.ui-tabs-vertical { width: 100%; }
+.ui-tabs-vertical .ui-tabs-nav { padding: .2em .1em .2em .2em; float: left; width: 10em; }
+.ui-tabs-vertical .ui-tabs-nav li { clear: left; width: 100%; border-bottom-width: 1px !important; border-right-width: 0 !important; margin: 0 -1px .2em 0; }
+.ui-tabs-vertical .ui-tabs-nav li a { display:block; }
+.ui-tabs-vertical .ui-tabs-nav li.ui-tabs-active { padding-bottom: 0; padding-right: .1em; border-right-width: 1px; border-right-width: 1px; }
+.ui-tabs-vertical .ui-tabs-panel { padding: 1em; float: right; width: 40em;}
