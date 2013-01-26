@@ -3,8 +3,6 @@
 // (c) 2013 HarpyWar (harpywar@gmail.com)
 // http://harpywar.com
 
-#max_execution_time(10);
-
 require_once("config.php");
 
 $response = array();
@@ -139,6 +137,10 @@ function _getcolorname($val)
 // start service and return action result (true | false)
 function start($id)
 {
+	// if service is not stopped
+	if ( status($id) !== false )
+		return false;
+
     $result = _cmd($id, 'start');
 	$status = strstr($result, 'START_PENDING') ? true : false;;
 
@@ -147,6 +149,10 @@ function start($id)
 // stop service and return action result (true | false)
 function stop($id)
 {
+	// if service is not running
+	if ( status($id) !== true )
+		return false;
+		
     $result = _cmd($id, 'stop');
 	$status = ( strstr($result, 'STOP_PENDING') || strstr($result, 'STOPPED') ) ? true : false;
 
@@ -156,8 +162,13 @@ function stop($id)
 function status($id)
 {
     $result = _cmd($id, 'query');
-	$status = ( strstr($result, 'RUNNING') || strstr($result, 'START_PENDING') ) ? true : false;
+	$status = null; // service busy by default
 	
+	if ( strstr($result, 'RUNNING') ) 
+		$status = true;
+	if ( strstr($result, 'STOPPED') ) 
+		$status = false;
+		
 	return $status;
 }
 

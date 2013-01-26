@@ -101,7 +101,7 @@ function start(id, instance_id)
 	$.getJSON('proxy.php?do=start&id=' + id + '&instance=' + instance_id, function(data) {
 		if (data.result)
 		{
-			msgSuccess('Server ' + $("#hostname" + html_id).html() + ' started');
+			msgSuccess('Server ' + $("#hostname" + html_id).html() + ' stopped');
 			changeStatus( html_id, true );
 		}
 		else
@@ -111,7 +111,7 @@ function start(id, instance_id)
 				
 			getServerStatus(id, instance_id)
 		}
-		
+		//console.log(data.result);
 	})
 	.complete(function() {
 		$("#button" + html_id).attr('disabled', false);
@@ -135,10 +135,11 @@ function stop(id, instance_id)
 				
 			getServerStatus(id, instance_id)
 		}
+		//console.log(data.result);
 	})
 	.complete(function() {
 		$("#button" + html_id).attr('disabled', false);
-	});;
+	});
 }
 
 // get server status from api
@@ -344,7 +345,6 @@ function showfiles(id, instance_id)
 	
 	// first tab is activated so update content there
 	loadfile( console_id, console_instance_id, getTabSelectedIndex() );
-	console.log(getTabSelectedIndex());
 
 	// config modal window
 	$("#file-modal").attr('title', 'NFK Config — ' + servers[instance_id][id].hostname);
@@ -411,12 +411,13 @@ function savefile(id, instance_id, tab_index)
 	
 	$.post('file.php', { data: textarea.val() }, function(data)
 	{
-		console.log(data);
+		//console.log(data);
 		
+		// md5 hash
 		if (data.length == 32)
 		{
 			var url = window.location.origin + window.location.pathname + 'file.php?hash=' + data;
-			console.log(url);
+			//console.log(url);
 			
 			msgAlert('Sending ' + filename + ' ...');
 			

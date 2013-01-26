@@ -21,7 +21,7 @@ if ( isset($_GET['instance']) )
 			echo $data;
 			
 			// log all actions except frequent commands
-			if ($_GET['do'] != 'serverlist' && $_GET['do'] != 'getlog')
+			if ($_GET['do'] != 'serverlist' && $_GET['do'] != 'getlog' && $_GET['do'] != 'getfile')
 				log_action( $_SESSION['login'], $_SERVER['QUERY_STRING'] );
 				
 			exit;

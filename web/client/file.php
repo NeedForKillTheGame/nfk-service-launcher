@@ -1,6 +1,6 @@
 <?php
 
-// upload text to a file in logs\files
+// upload text from $_POST['data'] to logs\files\
 
 $max_upload_size = 5024000;
 
