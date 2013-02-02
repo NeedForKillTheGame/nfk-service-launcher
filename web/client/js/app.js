@@ -298,6 +298,9 @@ function showconsole(id, instance_id)
 	
 	// set focus on console input
 	$(document).bind('keydown', function() {
+		if (e.ctrlKey) // ignore ctrl to copy text via ctrl+c
+			return;
+			
 		$("input#ctext").focus();
 	});
 	
