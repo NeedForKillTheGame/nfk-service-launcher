@@ -29,6 +29,7 @@ class Config
 		'autoexec.cfg',
 		'nfkconfig.cfg',
 		'nfksetup.ini',
+		'ipban.txt',
 	);
 }
 

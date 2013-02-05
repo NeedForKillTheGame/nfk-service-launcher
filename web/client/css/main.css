@@ -79,9 +79,9 @@ li { list-style-type: disc; margin-left: 20px; }
 #console-modal, #file-modal{display:none;}
 
 #file-modal textarea {
-	margin-top: -270px;
+	margin-top: -305px;
 	margin-left: 40px;
-	width: 581px;
+	width: 580px;
 	height: 450px;
 	border: 0px;
 	padding: 3px;

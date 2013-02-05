@@ -354,9 +354,18 @@ function getfile($id)
 }
 
 // put new content from $_GET['url'] to the file $_GET['file']
-function savefile($id)
+function savefile($id, $depth = false)
 {
 	$filename = _getfilename($id);
+	
+	// clone ipban.txt to all servers
+	if ($_GET['file'] == 'ipban.txt' && !$depth)
+	{
+		foreach (Config::$Servers as $sid => $sport)
+			savefile($sid + 1, true);
+			
+		return true;
+	}
 	
 	if ( !isset($_GET['url']) )
 		throw new Exception('Url to download file must not be empty');
@@ -406,6 +415,7 @@ function _getfilename($id)
 		case 'nfkconfig.cfg':		
 		case 'realtime.log':
 		case 'scc.cfg':
+		case 'ipban.txt':
 			$path = '\SERVER\\';
 			break;
 			

@@ -297,7 +297,7 @@ function showconsole(id, instance_id)
 
 	
 	// set focus on console input
-	$(document).bind('keydown', function() {
+	$(document).bind('keydown', function(e) {
 		if (e.ctrlKey) // ignore ctrl to copy text via ctrl+c
 			return;
 			
@@ -407,11 +407,11 @@ function loadfile(id, instance_id, tab_index)
 // send file from textarea to server
 function savefile(id, instance_id, tab_index)
 {
-	var filename = $("#tabs>ul>li>a[href=#tabs-" + tab_index + "]").text()
+	var filename = $("#tabs>ul>li>a[href=#tabs-" + tab_index + "]").text();
 	var textarea = $("#tabs>div#tabs-" + tab_index + ">textarea");
 	
 	$("#fsave").attr('disabled', true);
-	
+
 	$.post('file.php', { data: textarea.val() }, function(data)
 	{
 		//console.log(data);
@@ -419,25 +419,40 @@ function savefile(id, instance_id, tab_index)
 		// md5 hash
 		if (data.length == 32)
 		{
-			var url = window.location.origin + window.location.pathname + 'file.php?hash=' + data;
-			//console.log(url);
-			
 			msgAlert('Sending ' + filename + ' ...');
-			
+	
 			// send api request to update file on the server
-			$.getJSON('proxy.php?do=savefile&id=' + console_id + '&instance=' + console_instance_id + '&file=' + filename + '&url=' + escape(url), function(data)
-			{
-				msgSuccess(filename + " updated on the server");
-				
-				loadfile(id, instance_id, tab_index);
-			});
+			if (filename == 'ipban.txt')
+				for (i = 1; i <= instance_count; i++)
+					_savefile(id, i, tab_index, data);
+			else
+				_savefile(id, instance_id, tab_index, data);
 		}
 		else
 			msgError(data);
 
 	});
 }
+// send savefile api request
+function _savefile(id, instance_id, tab_index, filehash)
+{
+	var filename = $("#tabs>ul>li>a[href=#tabs-" + tab_index + "]").text();
+			
+	var url = window.location.origin + window.location.pathname + 'file.php?hash=' + filehash;
+	//console.log(url);
+		
+	$.getJSON('proxy.php?do=savefile&id=' + console_id + '&instance=' + instance_id + '&file=' + filename + '&url=' + escape(url), function(data)
+	{
+		if (filename == 'ipban.txt')
+			msgSuccess(filename + " cloned to all servers on the machine #" + instance_id);
+		else
+			msgSuccess(filename + " updated on the server");
 
+		loadfile(id, instance_id, tab_index);
+	});
+	
+	return;
+}
 
 // return files tab selected index
 function getTabSelectedIndex()
@@ -450,7 +465,7 @@ function getTabSelectedIndex()
 
 function msgSuccess(text)
 {
-	noty({text: text, timeout: 2000, type: 'success', layout: 'topRight' });
+	noty({text: text, timeout: 3000, type: 'success', layout: 'topRight' });
 }
 function msgAlert(text)
 {
