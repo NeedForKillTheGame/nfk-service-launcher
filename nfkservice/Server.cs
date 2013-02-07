@@ -107,7 +107,7 @@ namespace nfkservice
                 return;
 
             Log.Error("Server crashed! Restarting...");
-            Thread.Sleep(3000);
+            Thread.Sleep(10000);
             Log.ClearOldText();
             Start();
         }

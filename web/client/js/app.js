@@ -72,7 +72,7 @@ function loadServers(instance_id)
 				
 				var html_id = this.id + '_' + instance_id;
 				$('#instance' + instance_id + ' > tbody:last').before('<tr><td><a href="#" onclick="return showfiles(' + this.id + ', ' + instance_id + ')" title="Config editor"><img id="config_image' + html_id + '" src="img/config.png" border=0 width=16 height=16></a>&nbsp;<a href="#" onclick="return showconsole(' + this.id + ', ' + instance_id + ')" title="Console"><img id="console_image' + html_id + '" src="" border=0 width=16 height=16></a>&nbsp;<span class="hostname" id="hostname' + html_id + '" onclick="editname(' + this.id + ', ' + instance_id + ')">' + this.hostname + '</span><input id="hostedit' + html_id + '" onfocusout="savename(' + this.id + ', ' + instance_id + ')" value="' + this.hostname + '"></td><td><button id="button' + html_id + '" onclick="control(' + this.id + ', ' + instance_id + ')"></button></td></tr>');
-				changeStatus(html_id, this.status);
+				changeStatus(this.id, instance_id, this.status);
 			});
 			$("#loading" + instance_id).hide();
 		}
@@ -101,8 +101,8 @@ function start(id, instance_id)
 	$.getJSON('proxy.php?do=start&id=' + id + '&instance=' + instance_id, function(data) {
 		if (data.result)
 		{
-			msgSuccess('Server ' + $("#hostname" + html_id).html() + ' stopped');
-			changeStatus( html_id, true );
+			msgSuccess('Server ' + $("#hostname" + html_id).html() + ' started');
+			changeStatus(id, instance_id, true);
 		}
 		else
 		{
@@ -126,7 +126,7 @@ function stop(id, instance_id)
 		if (data.result)
 		{
 			msgSuccess('Server ' + $("#hostname" + html_id).html() + ' stopped');
-			changeStatus( html_id, false );
+			changeStatus(id, instance_id, false);
 		}
 		else
 		{
@@ -152,30 +152,33 @@ function getServerStatus(id, instance_id)
 		if (data.result)
 			status = data.result;
 		
-		changeStatus( html_id, status );
+		changeStatus(id, instance_id, status );
 	});
 }
 
 
-function changeStatus(id, status)
+function changeStatus(id, instance_id, status)
 {
+	servers[instance_id][id].status = status;
+
+	var html_id = id + '_' + instance_id;
 	if (status)
 	{
-		$("#hostname" + id).css('color', 'black');
-		$("#hostname" + id).css('font-weight', 'bold');
-		$("#button" + id).html('Stop');
-		$("#console_image" + id).attr('src', 'img/console_on.png');
+		$("#hostname" + html_id).css('color', 'black');
+		$("#hostname" + html_id).css('font-weight', 'bold');
+		$("#button" + html_id).html('Stop');
+		$("#console_image" + html_id).attr('src', 'img/console_on.png');
 	}
 	else
 	{
-		$("#hostname" + id).css('color', 'silver');
-		$("#hostname" + id).css('font-weight', 'normal');
-		$("#button" + id).html('Start');
-		$("#console_image" + id).attr('src', 'img/console_off.png');
+		$("#hostname" + html_id).css('color', 'silver');
+		$("#hostname" + html_id).css('font-weight', 'normal');
+		$("#button" + html_id).html('Start');
+		$("#console_image" + html_id).attr('src', 'img/console_off.png');
 	}
 
-	$("#hostedit" + id).hide();
-	$("#hostname" + id).show(3000);
+	$("#hostedit" + html_id).hide();
+	$("#hostname" + html_id).show(3000);
 }
 
 function editname(id, instance_id)
