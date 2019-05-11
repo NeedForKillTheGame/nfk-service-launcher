@@ -54,7 +54,10 @@ For example: `nfkservice.exe /i`
 * `sc stop NFK` - start service
 * `sc query NFK` - get service state
 
+### [Installation on Linux](https://github.com/NeedForKillTheGame/nfk-service-launcher/wiki/NFK-server-on-Linux)
+
 <br />
+
 ## Web Interface to control servers
 
 * [Web API](https://github.com/HarpyWar/nfk-service-launcher/wiki/Web%20API)
