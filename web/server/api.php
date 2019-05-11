@@ -142,7 +142,10 @@ function start($id)
 		return false;
 
     $result = _cmd($id, 'start');
-	$status = strstr($result, 'START_PENDING') ? true : false;;
+
+	$status = Config::$Linux
+		? status($id) // FIXME: for linux just return current status
+		: strstr($result, 'START_PENDING') ? true : false;;
 
 	return $status;
 }
@@ -152,10 +155,14 @@ function stop($id)
 	// if service is not running
 	if ( status($id) !== true )
 		return false;
-		
-    $result = _cmd($id, 'stop');
-	$status = ( strstr($result, 'STOP_PENDING') || strstr($result, 'STOPPED') ) ? true : false;
 
+    $result = _cmd($id, 'stop');
+
+	$status = Config::$Linux
+		? !status($id) // FIXME: for linux just return current status
+		: ( strstr($result, 'STOP_PENDING') || strstr($result, 'STOPPED') ) ? true : false;
+
+	
 	return $status;
 }
 // return status of the service (true | false)
@@ -164,9 +171,11 @@ function status($id)
     $result = _cmd($id, 'query');
 	$status = null; // service busy by default
 	
-	if ( strstr($result, 'RUNNING') ) 
+	if ( (Config::$Linux && strstr($result, 'Active: active')) // linux
+		|| (!Config::$Linux && strstr($result, 'RUNNING')) ) // windows
 		$status = true;
-	if ( strstr($result, 'STOPPED') ) 
+	if ( (Config::$Linux && strstr($result, 'Active: inactive')) // linux
+		|| (!Config::$Linux && strstr($result, 'STOPPED')) ) // windows
 		$status = false;
 		
 	return $status;
@@ -183,13 +192,17 @@ function _cmd($id, $action)
 {
 	$port = _getportbyid($id);
 
-	$cmd = "script\\control.cmd $action $port";
+	$cmd = Config::$Linux 
+		? "script/control.sh $action $port"
+		: "script\\control.cmd $action $port";
     $result = shell_exec($cmd);
 
 	// result example:
-	if ( strstr($result, '[SC] ') )
-		throw new Exception($result);
-	
+	if ( (Config::$Linux && !strstr($result, 'Loaded: loaded')) // linux
+		|| (!Config::$Linux && strstr($result, '[SC] ')) ) // windows
+	{
+		throw new Exception($result);			
+	}
 	return $result;
 	
 	// STOP
@@ -215,7 +228,9 @@ function _cmd($id, $action)
         PID                : 11016
         FLAGS              :
 	*/
+	
 	// STATUS
+	// (Windows)
 	/*
 	SERVICE_NAME: NFK_29995
         TYPE               : 10  WIN32_OWN_PROCESS
@@ -234,6 +249,24 @@ function _cmd($id, $action)
 	or
 	[SC] EnumQueryServicesStatus:OpenService FAILED 5: Access is denied.
 	*/
+	// (Linux)
+	/*
+	● nfk.service - nfk
+	   Loaded: loaded (/etc/systemd/system/nfk.service; enabled)
+	   Active: active (running) since Fri 2019-05-10 04:00:43 MSK; 23h ago
+	 Main PID: 29007 (wine)
+	   CGroup: /system.slice/nfk.service
+			   ├─29007 /bin/sh -e /usr/bin/wine /usr/local/nfk/SERVER.exe +gowindow +nosound +nfkplanet +game server +exec serv...
+			   ├─29011 /usr/local/nfk/SERVER.exe +gowindow +nosound +nfkplanet +game server +exec server +dontsavecfg
+			   ├─29014 /usr/lib/i386-linux-gnu/wine/bin/wineserver
+			   ├─29020 C:\windows\system32\services.exe
+			   ├─29024 C:\windows\system32\winedevice.exe MountMgr
+			   ├─29031 C:\windows\system32\plugplay.exe
+			   └─29041 C:\windows\system32\explorer.exe /desktop
+
+	Warning: Journal has been rotated since unit was started. Log output is incomplete or unavailable.
+	*/
+	
 }
 
 function editname($id)
@@ -405,7 +438,7 @@ function _getfilename($id)
 	{
 		case 'nfksetup.ini':	
 		case 'maplist.txt':
-			$path = '\BASENFK\\';
+			$path = DIRECTORY_SEPARATOR . 'BASENFK' . DIRECTORY_SEPARATOR;
 			break;
 
 		case 'autoexec.cfg':
@@ -416,7 +449,7 @@ function _getfilename($id)
 		case 'realtime.log':
 		case 'scc.cfg':
 		case 'ipban.txt':
-			$path = '\SERVER\\';
+			$path = DIRECTORY_SEPARATOR . 'SERVER' . DIRECTORY_SEPARATOR;
 			break;
 			
 		default:
