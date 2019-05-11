@@ -10,7 +10,7 @@ class Config
 	#public static $ServerPath = 'c:\\servers\\nfk\\';
 	
 	// servers enumeration as ports
-	public static $Servers = array(29991, 29992);
+	public static $Servers = array('29991', '29992');
 	
 	// if server running on Windows set to false
 	public static $Linux = true;
