@@ -1,17 +1,18 @@
 #!/bin/bash
 
+service_name=nfk_$2.service
 
 if [[ $1 == "query" ]]
 then
-   systemctl status $2.service
+   systemctl status $service_name
 fi
 
 if [[ $1 == "stop" ]]
 then
-   sudo systemctl stop $2.service && systemctl status $2.service
+   sudo systemctl stop $service_name && systemctl status $service_name
 fi
 
 if [[ $1 == "start" ]]
 then   
-   sudo systemctl start $2.service && systemctl status $2.service
+   sudo systemctl start $service_name && systemctl status $service_name
 fi

@@ -43,7 +43,7 @@ try
 }
 catch(Exception $e)
 {
-	$response['error'] = $e->GetMessage();
+	$response['error'] = $e->getMessage();
 }
 
 

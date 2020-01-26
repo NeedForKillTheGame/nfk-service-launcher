@@ -6,7 +6,7 @@ class Config
 	public static $ApiKey = "1d4060d5-84a6-4d4b-9b31-c7cb3206f317";
 	
 	// path to NFK servers directory (backslash at the end of path is required)
-	public static $ServerPath = '/usr/local/';
+	public static $ServerPath = '/usr/local/nfk/';
 	#public static $ServerPath = 'c:\\servers\\nfk\\';
 	
 	// servers enumeration as ports
