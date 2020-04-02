@@ -14,5 +14,5 @@ fi
 
 if [[ $1 == "start" ]]
 then   
-   sudo systemctl start $service_name && systemctl status $service_name
+   sudo systemctl restart $service_name && systemctl status $service_name
 fi

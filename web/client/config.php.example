@@ -31,5 +31,23 @@ class Config
 		'nfksetup.ini',
 		'ipban.txt',
 	);
+	
+
+	// path to directory with maps
+	public static $MapPath = "../maps";
+	
+
+	// allowed map directory names in root of $MapPath
+	public static $MapDirs = [
+		"trix",
+		"dm",
+		"tdm",
+		"duel",
+		"ctf",
+		"dom",
+		"unsorted",
+		"upload"
+	];
+
 }
 
