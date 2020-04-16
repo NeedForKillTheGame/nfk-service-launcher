@@ -174,7 +174,7 @@ function status($id)
 	if ( (Config::$Linux && strstr($result, 'Active: active')) // linux
 		|| (!Config::$Linux && strstr($result, 'RUNNING')) ) // windows
 		$status = true;
-	if ( (Config::$Linux && strstr($result, 'Active: inactive')) // linux
+	if ( (Config::$Linux && (strstr($result, 'Active: inactive') || strstr($result, 'Active: failed')) ) // linux
 		|| (!Config::$Linux && strstr($result, 'STOPPED')) ) // windows
 		$status = false;
 		

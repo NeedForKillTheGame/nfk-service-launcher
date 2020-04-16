@@ -25,6 +25,10 @@ require_once('auth.inc.php');
 </div>
 <div class='clear'></div>
 
+<div id="line_dst" style='margin-left: 10px;'>
+	[ <a href="maps.php">Server Maps</a> ]
+</div>
+<div class='clear'></div>
 
 
 <?php for ($i = 1; $i <= count(Config::$Instances); $i++): ?>
@@ -54,27 +58,39 @@ require_once('auth.inc.php');
 <div class='clear'></div>
 
 <div class='description'>
+
 <p>
-Временные серваки могут использоваться для проведения турниров или резервироваться для любых игр.
-<br>Можно переименовывать их названия соответственно именам команд или игроков, которые должны там играть.
-<br>Раз в сутки (утром) они автоматически останавливаются, если все ещё запущены - чтобы не работали "в холостую" и не засоряли планету.
+<img id="config_image1_2" src="img/config.png" border="0" width="16" height="16"> Редактор конфигурационных файлов сервера
+<br>
+<img id="console_image1_2" src="img/console_on.png" border="0" width="16" height="16"> Консоль сервера, позволяет отправлять команды
 </p>
 <p>
-Основные серваки автоматически перезапускаются раз в сутки (утром) &mdash; для установки возможных обновлений и достижения максимальной стабильности на весь день.
-<br>Но иногда они могут падать (обычно, после дисконнекта с планетой), и в такие трудные моменты им следует помочь с запуском.
+Cерверы cleanvoice автоматически перезапускаются раз в сутки (утром) &mdash; для достижения максимальной стабильности на весь день.
 </p>
 <p>
 <i>На планете сортировка делается по аптайму, поэтому при перезапуске сервер всегда оказывается внизу списка.</i>
 </p>
+<h3>Карты</h3>
+<p>
+Карты можно <span id="line_src">удалять и перемещать</span>, загружать новые через <a href="https://nfk.harpywar.com/nfkmap">nfk.harpywar.com/nfkmap</a>, .
+<br>Все действия с картами применяются сразу на cleanvoice FN сервере. На DE серверах синхронизация раз в час. На серверах rocky раз в 10 минут.
+</p>
+<p>
+Текущие карты на серверах <a href="https://nfk.harpywar.com/maps">nfk.harpywar.com/maps</a>
+<br>
+<small>(<a href="https://github.com/NeedForKillTheGame/nfk-service-launcher/blob/master/web/server/script/cron_sync.sh">скрипт для синхронизации</a>)</small>
+</p>
+
+<p>
 <h3>Как банить по IP</h3>
 1. Узнать адрес нарушителя командой <b>svinfo</b>
-<br>2. Если требуется забанить всю подсеть, то для конкретного IP подсеть провайдера можно найти на <a href="http://whois.domaintools.com">whois.domaintools.com</a>, см. CIDR или route). Подсеть задается битовой маской (например, 12.34.56.78/20).
-<br>3. Открыть файл <i>ipban.txt</i> и добавить ip, либо подсеть на новую строчку. Можно добавить комментарий после знака решетки <i># вот так</i>. При изменении на любом из серверов этот файл автоматически копируется на все остальные!
+<br>2. Если требуется забанить всю подсеть, то для конкретного IP адреса можно найти подсеть провайдера на <a href="http://www.whois-service.ru/lookup/">whois-service.ru</a> (см. CIDR или route). Задается она битовой маской (например, 12.34.56.0/20).
+<br>3. Открыть файл <i>ipban.txt</i> и добавить ip (или подсеть) на новую строку. Можно добавить комментарий после знака решетки <i>#вот так</i>. При изменении на любом из серверов этот файл автоматически копируется на все остальные!
 <br>4. Кикнуть игрока с сервера через консоль командой <b>kickplayer</b>. Теперь он не сможет зайти ни на один из серверов.
-
+</p>
 </div>
 <br />
-<div class='author'>&copy; 2013 <a href="http://harpywar.com">HarpyWar</a></div>
+<div class='author'><a href="https://github.com/NeedForKillTheGame/nfk-service-launcher">Source code on Github</a></div>
 
 
 
@@ -112,18 +128,77 @@ require_once('auth.inc.php');
 </div>
 
 
+<svg>
+  <line id="line" stroke-width="2px" stroke="red"  x1="0" y1="0" x2="100" y2="100"/>
+</svg>
+
+
+<style>
+@keyframes fadeout {
+   from    { opacity: 1;  }
+   to      { opacity: 0; display: none; }
+}
+
+svg  {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  animation: fadeout 0.4s both ease-in; 
+  display: none;
+  cursor: help;
+}
+
+#line_src {
+	border-bottom: 1px dashed #333;
+	margin-bottom: 3px;
+    cursor: help;
+}
+</style>
 
 <script language="javascript">
 
 var instance_count = <?php echo count(Config::$Instances) ?>;
 	
+var line_el = document.getElementById("line");
+var div1_el = document.getElementById("line_src");
+var div2_el = document.getElementById("line_dst");
+
+	
+div1_el.addEventListener('mouseenter', e => {
+	draw_line(e);
+});
+
+
+function draw_line(e)
+{
+	var x1 = e.x;
+	//var x1 = div1_el.offsetLeft + (div1_el.offsetWidth / 2);
+	var y1 = div1_el.offsetTop;
+	var x2 = div2_el.offsetLeft + 50;
+	var y2 = div2_el.offsetTop + (div2_el.offsetHeight);
+	
+	line_el.setAttribute('x1', x1);
+	line_el.setAttribute('y1', y1);
+	line_el.setAttribute('x2', x2);
+	line_el.setAttribute('y2', y2);
+	line_el.parentElement.style.display = "block";
+	
+	// hide after animation end
+	setTimeout(function(){
+		line_el.parentElement.style.display = "none";
+	}, 900);
+}
+
+
 </script>
 
 
-<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.0/themes/base/jquery-ui.css" />
+<link rel="stylesheet" href="//code.jquery.com/ui/1.10.0/themes/base/jquery-ui.css" />
 
-<script type='text/javascript' src='http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js'></script>
-<script src="http://code.jquery.com/ui/1.10.0/jquery-ui.min.js"></script>
+<script type='text/javascript' src='//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js'></script>
+<script src="//code.jquery.com/ui/1.10.0/jquery-ui.min.js"></script>
 <script type="text/javascript" src="js/noty/jquery.noty.js"></script>
 <script type="text/javascript" src="js/noty/layouts/topRight.js"></script>
 <script type="text/javascript" src="js/noty/themes/default.js"></script>
