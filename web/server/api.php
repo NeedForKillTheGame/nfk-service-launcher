@@ -171,10 +171,10 @@ function status($id)
     $result = _cmd($id, 'query');
 	$status = null; // service busy by default
 	
-	if ( (Config::$Linux && strstr($result, 'Active: active')) // linux
+	if ( (Config::$Linux && strstr($result, 'Up')) // linux
 		|| (!Config::$Linux && strstr($result, 'RUNNING')) ) // windows
 		$status = true;
-	if ( (Config::$Linux && (strstr($result, 'Active: inactive') || strstr($result, 'Active: failed')) ) // linux
+	if ( (Config::$Linux && (strstr($result, 'Exited') || strstr($result, 'Active: failed')) ) // linux
 		|| (!Config::$Linux && strstr($result, 'STOPPED')) ) // windows
 		$status = false;
 		
@@ -193,13 +193,13 @@ function _cmd($id, $action)
 	$port = _getportbyid($id);
 
 	$cmd = Config::$Linux 
-		? "script/control.sh $action $port"
+		? "script/control.sh $action $port 2>&1"
 		: "script\\control.cmd $action $port";
     $result = shell_exec($cmd);
 
 	// result example:
-	if ( (Config::$Linux && !strstr($result, 'Loaded: loaded')) // linux
-		|| (!Config::$Linux && strstr($result, '[SC] ')) ) // windows
+    if ( /*(Config::$Linux && !strstr($result, 'Loaded: loaded')) // linux
+       || */(!Config::$Linux && strstr($result, '[SC] ')) ) // windows
 	{
 		throw new Exception($result);			
 	}

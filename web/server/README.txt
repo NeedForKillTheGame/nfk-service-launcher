@@ -37,3 +37,36 @@
 
 	$Servers - массив с номерами портов установленных серверов.
 		Например, array(29991, 29992);
+		
+		
+# Docker
+
+```
+docker run --name nfk_control --privileged \
+	-v /home/nfk:/usr/local/nfk \
+	-v /var/run/docker.sock:/var/run/docker.sock \
+	-e PORTS_ENUM=29996,29997,29998 \
+	-e APIKEY=CHANGE_ME \
+	-p 8081:80 \
+	harpywar/nfkcontrol
+```
+
+## docker-compose.yml
+
+```
+version: '3'
+
+services:
+  nfk_control:
+    image: harpywar/nfkcontrol
+    container_name: nfk_control
+    privileged: true
+    ports:
+      - 8081:80
+    environment:
+      - "PORTS_ENUM=29996,29997,29998"
+      - "APIKEY=CHANGE_ME"
+    volumes:
+      - /home/nfk:/usr/local/nfk
+      - /var/run/docker.sock:/var/run/docker.sock
+```
