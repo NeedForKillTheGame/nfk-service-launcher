@@ -8,6 +8,12 @@ sed -i "s/1d4060d5-84a6-4d4b-9b31-c7cb3206f317/$APIKEY/" config.php
 
 chown -R :www-data /usr/local/nfk
 
+# download maps
+git clone https://github.com/NeedForKillTheGame/nfk-maps /usr/local/nfk/maps
+
+# add job to update maps
+echo "* * * * * git pull /usr/local/nfk/maps" | crontab -
+
 
 # Get the group ID of the Docker socket
 DOCKER_SOCK_GID=$(stat -c '%g' /var/run/docker.sock)
