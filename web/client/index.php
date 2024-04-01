@@ -25,11 +25,6 @@ require_once('auth.inc.php');
 </div>
 <div class='clear'></div>
 
-<div id="line_dst" style='margin-left: 10px;'>
-	[ <a href="maps.php">Server Maps</a> ]
-</div>
-<div class='clear'></div>
-
 
 <?php for ($i = 1; $i <= count(Config::$Instances); $i++): ?>
 
@@ -72,13 +67,7 @@ Cерверы cleanvoice автоматически перезапускаютс
 </p>
 <h3>Карты</h3>
 <p>
-Карты можно <span id="line_src">удалять и перемещать</span>, загружать новые через <a href="https://nfk.harpywar.com/nfkmap">nfk.harpywar.com/nfkmap</a>, .
-<br>Все действия с картами применяются сразу на cleanvoice FN сервере. На DE серверах синхронизация раз в час. На серверах rocky раз в 10 минут.
-</p>
-<p>
-Текущие карты на серверах <a href="https://nfk.harpywar.com/maps">nfk.harpywar.com/maps</a>
-<br>
-<small>(<a href="https://github.com/NeedForKillTheGame/nfk-service-launcher/blob/master/web/server/script/cron_sync.sh">скрипт для синхронизации</a>)</small>
+Обновляются на серверах раз в минуту из <a href="https://github.com/NeedForKillTheGame/nfk-maps">https://github.com/NeedForKillTheGame/nfk-maps</a></small>
 </p>
 
 <p>
